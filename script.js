@@ -7,31 +7,31 @@ function getRndFloat(min, max) {
 }
 
 class Plant {
-	constructor(x, growth_rate, max_height) {
+	constructor(x, growth_rate) {
 		this.x = x;
 		this.growth_rate = growth_rate;
-		this.max_height = max_height;
 		this.height = 0;
 	} 
 
 	grow() {
 		if (this.height < this.max_height) {
-			this.height += 1;
+			this.height += height/100;
 		}
 	}
 
 }
 
 class Tree extends Plant {
-	constructor(x, growth_rate, max_height) {
-		super(x, growth_rate, max_height);
-		this.width = 10;
+	constructor(x, growth_rate) {
+		super(x, growth_rate);
+		this.width = width/40;
 		this.height = 0;
-		this.num_leaves = 200;
+		this.max_height = getRndInteger(height*0.6, height * 0.9)
+		this.num_leaves = this.width*this.width;
 		this.leaf_positions = [];
 
 		for (let i = 0; i < this.num_leaves; i++) {
-			this.leaf_positions.push(createVector(getRndFloat(-15,15), getRndFloat(-10,10)))
+			this.leaf_positions.push(createVector(getRndFloat(-this.width*2,this.width*2), getRndFloat(-this.width,this.width)))
 		}
 	}
 
@@ -55,13 +55,13 @@ class Tree extends Plant {
 			for (let i = 0; i < this.num_leaves; i++) {
 				strokeWeight(0.5)
 				fill(greens[getRndInteger(0,2)]);
-				ellipse(leaves_centre.x+this.leaf_positions[i].x, leaves_centre.y+this.leaf_positions[i].y, 3);
+				ellipse(leaves_centre.x+this.leaf_positions[i].x, leaves_centre.y+this.leaf_positions[i].y, this.width/3);
 			}
 		} else {
 			for (let i = 0; i < this.num_leaves; i++) {
 				strokeWeight(0.5)
 				fill(greens[getRndInteger(0,2)]);
-				ellipse(leaves_centre.x+this.leaf_positions[i].x, leaves_centre.y+this.leaf_positions[i].y, 3); // scale size/position with height until certain hieght?
+				ellipse(leaves_centre.x+this.leaf_positions[i].x, leaves_centre.y+this.leaf_positions[i].y, this.width/3); // scale size/position with height until certain hieght?
 			}
 		}
 
@@ -75,14 +75,14 @@ let x;
 let gr;
 
 function setup() {
-	createCanvas(400, 100);
+	createCanvas(800, 200);
 	fr = 30;
 	frameRate(fr);
 
 	trees = [];
 	x= getRndInteger(0,width);
 	gr = getRndInteger(5,10);
-	trees.push(new Tree(x, fr/4, 80))
+	trees.push(new Tree(x, fr/4))
 }
 
 function draw() {
@@ -90,8 +90,8 @@ function draw() {
 	
     if (frameCount % (fr-fr*Tree.spawn_rate()) == 0 && trees.length < num_trees) {
     	x= getRndInteger(0,width);
-    	gr = getRndInteger(5,10);
-    	trees.push(new Tree(x, fr/10, 80))
+    	gr = getRndInteger(5, 10);
+    	trees.push(new Tree(x, fr/10))
     }
 
 	trees.forEach(tree => {
